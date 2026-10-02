@@ -1,0 +1,795 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Инвестиции в недвижимость · Павлодар</title>
+<meta name="description" content="Сравнение посуточной, краткосрочной и долгосрочной аренды трёх квартир в Павлодаре: валовый и чистый доход с октября 2026 по декабрь 2027.">
+<style>
+  :root {
+    --bg: #ffffff;
+    --text: #1a1d1b;
+    --muted: #5b6660;
+    --line: #e2e7e4;
+    --soft: #f4f7f5;
+    --soft-2: #eaf1ed;
+    --accent: #2E7D5B;
+    --accent-ink: #ffffff;
+    --neg: #c62828;
+    --c-daily: #2E7D5B;
+    --c-short: #2f6db3;
+    --c-long: #a86a12;
+    --radius: 10px;
+  }
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1480px; margin: 0 auto; padding: 0 16px; }
+  .num { font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .neg { color: var(--neg); }
+  .pos { color: var(--accent); }
+  .muted { color: var(--muted); }
+  h1, h2, h3 { line-height: 1.25; margin: 0; }
+  h2 { font-size: 20px; font-weight: 650; margin-bottom: 14px; }
+  section.block { padding: 28px 0; border-top: 1px solid var(--line); }
+  button, input, select { font: inherit; color: inherit; }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* Header */
+  header.top { padding: 28px 0 22px; }
+  header.top h1 { font-size: 26px; font-weight: 700; letter-spacing: -0.01em; }
+  header.top h1 span { color: var(--accent); }
+  header.top p { margin: 6px 0 0; color: var(--muted); max-width: 760px; }
+
+  /* Summary cards */
+  .cards { display: grid; gap: 12px; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+  .card { border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; background: var(--bg); display: flex; flex-direction: column; gap: 4px; }
+  .card.portfolio { background: var(--soft-2); border-color: #cfe0d6; }
+  .card .ttl { font-size: 13px; color: var(--muted); }
+  .card .name { font-weight: 650; }
+  .card .badge { display: inline-block; align-self: flex-start; font-size: 13px; font-weight: 600; color: var(--accent); background: var(--soft-2); border-radius: 999px; padding: 2px 10px; margin: 6px 0 2px; }
+  .card.portfolio .badge { background: #fff; }
+  .card .big { font-size: 24px; font-weight: 700; letter-spacing: -0.01em; }
+  .card .sub { font-size: 13px; color: var(--muted); }
+  .card .rows { margin-top: 6px; font-size: 13px; display: grid; grid-template-columns: 1fr auto; gap: 2px 12px; }
+
+  /* Recommendations */
+  .recs { list-style: none; margin: 0; padding: 0; display: grid; gap: 10px; }
+  .recs li { padding: 12px 14px; border-left: 3px solid var(--accent); background: var(--soft); border-radius: 0 var(--radius) var(--radius) 0; }
+  .recs li.warn { border-left-color: var(--muted); }
+
+  /* Toolbar */
+  .toolbar { display: flex; flex-wrap: wrap; gap: 10px 16px; align-items: center; margin-bottom: 14px; }
+  .seg { display: inline-flex; border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+  .seg button { border: 0; background: var(--bg); padding: 7px 14px; cursor: pointer; font-size: 14px; }
+  .seg button + button { border-left: 1px solid var(--line); }
+  .seg button[aria-pressed="true"], .seg button[aria-selected="true"] { background: var(--accent); color: var(--accent-ink); }
+  .btn { border: 1px solid var(--line); background: var(--bg); border-radius: 8px; padding: 7px 14px; cursor: pointer; font-size: 14px; }
+  .btn:hover { background: var(--soft); }
+  .btn.danger { color: var(--neg); }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .btn.primary:hover { background: #276b4e; }
+  .spacer { flex: 1; }
+  .hint { font-size: 13px; color: var(--muted); }
+
+  /* Table */
+  .table-scroll { overflow-x: auto; border: 1px solid var(--line); border-radius: var(--radius); }
+  table.inc { border-collapse: separate; border-spacing: 0; width: 100%; font-size: 12.5px; }
+  table.inc th, table.inc td { padding: 6px 7px; text-align: right; border-bottom: 1px solid var(--line); white-space: nowrap; font-variant-numeric: tabular-nums; }
+  table.inc thead th { position: sticky; top: 0; background: var(--bg); font-weight: 600; color: var(--muted); font-size: 12px; z-index: 2; }
+  table.inc th:first-child, table.inc td:first-child { position: sticky; left: 0; text-align: left; background: var(--bg); z-index: 1; min-width: 190px; border-right: 1px solid var(--line); }
+  table.inc thead th:first-child { z-index: 3; }
+  table.inc .tot { background: var(--soft); font-weight: 700; }
+  table.inc thead th.tot { color: var(--text); }
+  table.inc tr.apt td { background: var(--soft-2); font-weight: 650; text-align: left; font-size: 13px; }
+  table.inc tr.apt td:first-child { background: var(--soft-2); }
+  table.inc tr.sc td:first-child { padding-left: 6px; }
+  table.inc tr.best td:first-child { font-weight: 650; }
+  table.inc tr.det td { color: var(--muted); font-size: 12px; border-bottom-style: dashed; }
+  table.inc tr.det td:first-child { padding-left: 34px; }
+  table.inc tr.det.strong td { color: var(--text); font-weight: 600; }
+  table.inc tr.portfolio td { background: var(--soft-2); font-weight: 700; border-top: 2px solid var(--accent); border-bottom: 0; }
+  table.inc tr.portfolio td:first-child { background: var(--soft-2); }
+  .rowbtn { border: 0; background: none; padding: 2px 4px; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; text-align: left; border-radius: 4px; }
+  .rowbtn:hover { background: var(--soft); }
+  .chev { display: inline-block; width: 12px; color: var(--muted); transition: none; font-size: 10px; }
+  .star { color: var(--accent); }
+
+  /* Mobile table */
+  .mobile-view { display: none; }
+  .m-apt { border: 1px solid var(--line); border-radius: var(--radius); margin-bottom: 12px; overflow: hidden; }
+  .m-apt h3 { font-size: 15px; padding: 10px 14px; background: var(--soft-2); }
+  .m-apt.portfolio { border-color: #cfe0d6; }
+  .m-row { width: 100%; display: flex; justify-content: space-between; align-items: center; gap: 12px; border: 0; border-top: 1px solid var(--line); background: var(--bg); padding: 11px 14px; cursor: pointer; text-align: left; }
+  .m-row:first-of-type { border-top: 0; }
+  .m-row .l { display: inline-flex; gap: 8px; align-items: center; }
+  .m-row.best .l { font-weight: 650; }
+  .m-row .v { font-weight: 650; }
+  .m-detail { background: var(--soft); padding: 6px 14px 10px 34px; font-size: 13px; display: grid; grid-template-columns: 1fr auto; gap: 3px 12px; }
+  .m-detail[hidden] { display: none; }
+  .m-port { display: grid; grid-template-columns: 1fr auto; gap: 4px 12px; padding: 10px 14px; font-size: 14px; }
+
+  /* Chart */
+  .chart-box { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; }
+  .chart-box svg { width: 100%; height: auto; display: block; }
+  .legend { display: flex; flex-wrap: wrap; gap: 6px 16px; font-size: 13px; margin-top: 6px; }
+  .legend i { display: inline-block; width: 14px; height: 3px; vertical-align: middle; margin-right: 6px; border-radius: 2px; }
+  .field-inline { display: inline-flex; align-items: center; gap: 8px; font-size: 14px; }
+  .field-inline select { padding: 6px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--bg); }
+
+  /* Settings */
+  details.settings > summary { cursor: pointer; font-size: 20px; font-weight: 650; list-style: none; display: flex; align-items: center; gap: 10px; }
+  details.settings > summary::-webkit-details-marker { display: none; }
+  details.settings > summary::before { content: "▸"; color: var(--accent); font-size: 16px; }
+  details.settings[open] > summary::before { content: "▾"; }
+  .set-group { margin-top: 20px; }
+  .set-group h3 { font-size: 16px; margin-bottom: 10px; }
+  .grid-fields { display: grid; gap: 10px 14px; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+  .fld { display: flex; flex-direction: column; gap: 4px; font-size: 13px; color: var(--muted); }
+  .fld input { color: var(--text); border: 1px solid #c9d1cd; border-radius: 8px; padding: 7px 9px; font-size: 14px; background: var(--bg); font-variant-numeric: tabular-nums; width: 100%; }
+  .fld input:focus { border-color: var(--accent); outline: none; box-shadow: 0 0 0 2px rgba(46,125,91,.2); }
+  .occ-grid { display: grid; gap: 8px; grid-template-columns: repeat(12, minmax(56px, 1fr)); }
+  .apt-set { border: 1px solid var(--line); border-radius: var(--radius); padding: 14px; margin-bottom: 12px; }
+  .apt-set legend { font-weight: 650; padding: 0 6px; }
+  .apt-set .actions { margin-top: 10px; display: flex; justify-content: flex-end; }
+  .set-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+
+  footer { border-top: 1px solid var(--line); padding: 22px 0 40px; font-size: 13px; color: var(--muted); }
+  footer p { margin: 0 0 8px; max-width: 900px; }
+
+  @media (max-width: 1023px) {
+    .cards { grid-template-columns: repeat(2, 1fr); }
+    .occ-grid { grid-template-columns: repeat(6, 1fr); }
+  }
+  @media (max-width: 767px) {
+    header.top h1 { font-size: 22px; }
+    .cards { grid-template-columns: 1fr; }
+    .desktop-view { display: none; }
+    .mobile-view { display: block; }
+    .occ-grid { grid-template-columns: repeat(4, 1fr); }
+    .toolbar .seg { flex: 1 1 auto; }
+    .toolbar .seg button { flex: 1; }
+    .only-desktop { display: none; }
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="wrap">
+    <h1>Инвестиции в недвижимость <span>·</span> Павлодар</h1>
+    <p>Сравнение трёх форматов аренды для каждой квартиры: валовый и чистый доход по месяцам с октября 2026 по декабрь 2027 года.</p>
+  </div>
+</header>
+
+<main>
+  <section class="block" aria-labelledby="h-summary">
+    <div class="wrap">
+      <h2 id="h-summary">Сводка: лучший сценарий за 2027 год</h2>
+      <div class="cards" id="cards"></div>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="h-recs">
+    <div class="wrap">
+      <h2 id="h-recs">Рекомендации</h2>
+      <ul class="recs" id="recs"></ul>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="h-table">
+    <div class="wrap">
+      <h2 id="h-table">Доходы по периодам, ₸</h2>
+      <div class="toolbar">
+        <div class="seg" role="group" aria-label="Показатель">
+          <button type="button" data-mode="gross">Валовый</button>
+          <button type="button" data-mode="net">Чистый</button>
+        </div>
+        <div class="seg" role="group" aria-label="Сценарии">
+          <button type="button" data-filter="all">Все сценарии</button>
+          <button type="button" data-filter="best">Только лучшие</button>
+        </div>
+        <span class="spacer"></span>
+        <span class="hint only-desktop">Нажмите на сценарий, чтобы увидеть расходы по статьям</span>
+        <button type="button" class="btn" id="btn-csv">Экспорт в CSV</button>
+      </div>
+      <div class="desktop-view">
+        <div class="table-scroll"><table class="inc" id="tbl"></table></div>
+      </div>
+      <div class="mobile-view">
+        <div class="toolbar">
+          <div class="seg" role="tablist" aria-label="Год" id="year-tabs">
+            <button type="button" role="tab" data-year="y2026">2026</button>
+            <button type="button" role="tab" data-year="y2027">2027</button>
+          </div>
+        </div>
+        <div id="mobile"></div>
+      </div>
+      <p class="hint">★ — лучший сценарий для квартиры по чистому доходу за 2027 год. Итог портфеля считается по лучшему сценарию каждой квартиры.</p>
+    </div>
+  </section>
+
+  <section class="block" aria-labelledby="h-chart">
+    <div class="wrap">
+      <h2 id="h-chart">График по месяцам</h2>
+      <div class="toolbar">
+        <label class="field-inline">Квартира
+          <select id="chart-apt"></select>
+        </label>
+      </div>
+      <div class="chart-box">
+        <div id="chart"></div>
+        <div class="legend">
+          <span><i style="background:var(--c-daily)"></i>Посуточно</span>
+          <span><i style="background:var(--c-short)"></i>Краткосрочно</span>
+          <span><i style="background:var(--c-long)"></i>Долгосрочно</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block">
+    <div class="wrap">
+      <details class="settings" id="settings">
+        <summary>Настройки</summary>
+        <p class="hint">Все изменения сразу пересчитывают таблицу и сохраняются в этом браузере.</p>
+        <div id="settings-body"></div>
+        <div class="set-actions">
+          <button type="button" class="btn" id="btn-add">+ Добавить квартиру</button>
+          <button type="button" class="btn danger" id="btn-reset">Сбросить к значениям по умолчанию</button>
+        </div>
+      </details>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <p>Цены — ориентировочные оценки рынка Павлодара на середину 2026 года. Перед решением сверьте их с актуальными объявлениями (например, на Krisha.kz) и при необходимости поправьте в настройках. Залог арендатора доходом не считается.</p>
+    <p>Налоговые правила могли измениться (в Казахстане с 2026 года действует новый Налоговый кодекс). Регулярная посуточная сдача может быть расценена как предпринимательская деятельность. Уточните у налогового консультанта.</p>
+  </div>
+</footer>
+
+<script>
+/* ============================================================
+   Модуль расчёта (чистые функции, без обращения к DOM)
+   ============================================================ */
+const Calc = (() => {
+  const START_Y = 2026, START_M = 9, N = 15;
+  const MONTHS = ['Янв','Фев','Мар','Апр','Май','Июн','Июл','Авг','Сен','Окт','Ноя','Дек'];
+  const SC = ['daily', 'short', 'long'];
+  const SC_LABEL = { daily: 'Посуточно', short: 'Краткосрочно', long: 'Долгосрочно' };
+  const ITEM_LABEL = {
+    commission: 'Комиссия площадок',
+    cleaning: 'Уборка и стирка белья',
+    consumables: 'Расходные материалы',
+    util: 'Коммунальные и содержание',
+    internet: 'Интернет и ТВ',
+    osi: 'ОСИ/КСК',
+    search: 'Поиск арендатора',
+    wear: 'Износ мебели и техники',
+    reserve: 'Резерв на ремонт'
+  };
+
+  function monthList() {
+    const out = [];
+    for (let i = 0; i < N; i++) {
+      const d = new Date(START_Y, START_M + i, 1);
+      const y = d.getFullYear(), m = d.getMonth();
+      out.push({ i, y, m, days: new Date(y, m + 1, 0).getDate(), label: MONTHS[m] + ' ' + String(y).slice(2) });
+    }
+    return out;
+  }
+
+  // Ночи округляются до 0,1 — так получены значения контрольного примера (PRD §9.3)
+  const r1 = x => Math.round(x * 10 + 1e-9) / 10;
+
+  function finish(gross, items, g) {
+    let expenses = 0;
+    for (const k in items) expenses += items[k];
+    const tax = gross * g.tax / 100;
+    return { gross, items, expenses, tax, net: gross - expenses - tax };
+  }
+
+  function calcDaily(ap, g, mo) {
+    const P = ap.daily * Math.pow(1 + g.idxShort / 100, mo.y - START_Y);
+    const nights = r1(mo.days * (g.occ[mo.m] / 100) * ap.k);
+    const gross = nights * P;
+    const checkins = g.stay > 0 ? nights / g.stay : 0;
+    return finish(gross, {
+      commission: gross * g.commission / 100,
+      cleaning: ap.clean * checkins,
+      consumables: g.consumables * nights,
+      util: ap.util,
+      internet: g.internet,
+      wear: gross * g.wearDaily / 100,
+      reserve: ap.reserve
+    }, g);
+  }
+
+  function buildShortPlan(g) {
+    const len = Math.max(0.1, g.shortLen), gap = Math.max(0, g.shortGap);
+    const intervals = [], searches = [];
+    let searchAt = 0;
+    while (searchAt < N && intervals.length < 500) {
+      const s = searchAt + gap;
+      searches.push(searchAt);
+      intervals.push([s, s + len]);
+      searchAt = s + len;
+    }
+    return { intervals, searches };
+  }
+
+  function calcShort(ap, g, mo, plan) {
+    const P = ap.short * Math.pow(1 + g.idxShort / 100, mo.y - START_Y);
+    let share = 0;
+    for (const [s, e] of plan.intervals) share += Math.max(0, Math.min(e, mo.i + 1) - Math.max(s, mo.i));
+    const newContracts = plan.searches.filter(t => Math.floor(t + 1e-9) === mo.i).length;
+    const gross = share * P;
+    return finish(gross, {
+      util: ap.util,
+      internet: g.internet,
+      search: g.searchFee * newContracts,
+      wear: gross * g.wearShort / 100,
+      reserve: ap.reserve
+    }, g);
+  }
+
+  function calcLong(ap, g, mo) {
+    const L = Math.max(0, Math.round(g.longSearch));
+    const fee = mo.i === 0 ? g.searchFee : 0;
+    if (mo.i < L) {
+      return finish(0, { util: ap.util, search: fee, reserve: ap.reserve }, g);
+    }
+    const rentMonth = mo.i - L;
+    const P = ap.long * Math.pow(1 + g.idxLong / 100, Math.floor(rentMonth / 12));
+    return finish(P, { osi: ap.osi, search: fee, wear: P * g.wearLong / 100, reserve: ap.reserve }, g);
+  }
+
+  function totals(series, MS) {
+    const t = { y2026: { gross: 0, net: 0 }, y2027: { gross: 0, net: 0 }, all: { gross: 0, net: 0 } };
+    series.forEach((r, i) => {
+      const key = MS[i].y === 2026 ? 'y2026' : 'y2027';
+      t[key].gross += r.gross; t[key].net += r.net;
+      t.all.gross += r.gross; t.all.net += r.net;
+    });
+    return t;
+  }
+
+  function computeAll(st) {
+    const g = st.general, MS = monthList(), plan = buildShortPlan(g);
+    const apts = st.apts.map(ap => {
+      const sc = {
+        daily: MS.map(mo => calcDaily(ap, g, mo)),
+        short: MS.map(mo => calcShort(ap, g, mo, plan)),
+        long: MS.map(mo => calcLong(ap, g, mo))
+      };
+      const tot = {};
+      SC.forEach(k => tot[k] = totals(sc[k], MS));
+      const order = SC.slice().sort((a, b) => tot[b].y2027.net - tot[a].y2027.net);
+      return { ap, sc, tot, order, best: order[0], second: order[1] };
+    });
+    const portfolio = MS.map((_, i) => ({
+      gross: apts.reduce((s, a) => s + a.sc[a.best][i].gross, 0),
+      net: apts.reduce((s, a) => s + a.sc[a.best][i].net, 0)
+    }));
+    return { MS, apts, portfolio, portfolioTot: totals(portfolio, MS) };
+  }
+
+  return { N, SC, SC_LABEL, ITEM_LABEL, MONTHS, monthList, computeAll, buildShortPlan };
+})();
+
+/* ============================================================
+   Значения по умолчанию (PRD §4)
+   ============================================================ */
+const DEFAULTS = {
+  general: {
+    idxShort: 8, idxLong: 8,
+    occ: [45, 45, 55, 55, 65, 75, 80, 80, 65, 60, 50, 55],
+    stay: 2.5, commission: 10, consumables: 800, internet: 6000,
+    searchFee: 10000, wearDaily: 3, wearShort: 2, wearLong: 1, tax: 10,
+    shortLen: 3, shortGap: 0.5, longSearch: 1
+  },
+  apts: [
+    { id: 'k1', code: 'К1', name: '1-комн., центр', note: 'Новый дом, свежий ремонт, новая мебель', daily: 14000, short: 180000, long: 150000, k: 1, util: 25000, osi: 5000, clean: 3000, reserve: 0 },
+    { id: 'k2', code: 'К2', name: '1-комн., центр', note: 'Новый дом, свежий ремонт, новая мебель', daily: 14000, short: 180000, long: 150000, k: 1, util: 25000, osi: 5000, clean: 3000, reserve: 0 },
+    { id: 'k3', code: 'К3', name: '2-комн., Усолка', note: 'Вторичное жильё, ремонт и мебель около 10 лет', daily: 13000, short: 160000, long: 130000, k: 0.9, util: 35000, osi: 7000, clean: 4000, reserve: 5000 }
+  ]
+};
+
+const GENERAL_FIELDS = [
+  ['idxShort', 'Индексация посуточной и краткосрочной с 01.01.2027, %', 0.5],
+  ['idxLong', 'Индексация долгосрочной при продлении, %', 0.5],
+  ['tax', 'Ставка налога (ИПН) от валового дохода, %', 0.5],
+  ['stay', 'Средняя длительность проживания гостя, суток', 0.1],
+  ['commission', 'Комиссия площадок (посуточно), %', 0.5],
+  ['consumables', 'Расходные материалы, ₸ за сутки', 100],
+  ['internet', 'Интернет и ТВ, ₸/мес (посуточно и краткосрочно)', 500],
+  ['searchFee', 'Поиск арендатора, ₸ за новый договор', 1000],
+  ['wearDaily', 'Износ при посуточной аренде, % от валового', 0.5],
+  ['wearShort', 'Износ при краткосрочной аренде, % от валового', 0.5],
+  ['wearLong', 'Износ при долгосрочной аренде, % от валового', 0.5],
+  ['shortLen', 'Длительность краткосрочного договора, мес', 0.5],
+  ['shortGap', 'Простой между краткосрочными договорами, мес', 0.5],
+  ['longSearch', 'Поиск долгосрочного арендатора, мес', 1]
+];
+const APT_TEXT_FIELDS = [['code', 'Код'], ['name', 'Название'], ['note', 'Описание']];
+const APT_NUM_FIELDS = [
+  ['daily', 'Посуточно, ₸/сутки', 500],
+  ['short', 'Краткосрочно, ₸/мес', 5000],
+  ['long', 'Долгосрочно, ₸/мес', 5000],
+  ['k', 'Коэффициент загрузки (посуточно)', 0.05],
+  ['util', 'Коммунальные и содержание, ₸/мес', 1000],
+  ['osi', 'ОСИ/КСК при долгосрочной, ₸/мес', 500],
+  ['clean', 'Уборка и стирка, ₸ за заезд', 500],
+  ['reserve', 'Резерв на ремонт, ₸/мес', 1000]
+];
+
+/* ============================================================
+   Состояние и хранение
+   ============================================================ */
+const STORE_KEY = 'realty-pavlodar-v1';
+const clone = o => JSON.parse(JSON.stringify(o));
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY);
+    if (!raw) return clone(DEFAULTS);
+    const s = JSON.parse(raw);
+    if (!s || !s.general || !Array.isArray(s.apts) || !s.apts.length) return clone(DEFAULTS);
+    const general = Object.assign(clone(DEFAULTS.general), s.general);
+    if (!Array.isArray(general.occ) || general.occ.length !== 12) general.occ = clone(DEFAULTS.general.occ);
+    const apts = s.apts.map(a => Object.assign(clone(DEFAULTS.apts[0]), a));
+    return { general, apts };
+  } catch (e) { return clone(DEFAULTS); }
+}
+function saveState() {
+  try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { /* хранилище недоступно */ }
+}
+
+let state = loadState();
+const ui = { mode: 'net', filter: 'all', year: 'y2027', expanded: new Set(), mExpanded: new Set(), chartApt: 0 };
+let result = null;
+
+/* ============================================================
+   Форматирование
+   ============================================================ */
+function fmt(v) {
+  let n = Math.round(v);
+  if (n === 0) return '0';
+  const s = Math.abs(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (n < 0 ? '−' : '') + s;
+}
+const money = v => fmt(v) + ' ₸';
+const cls = v => Math.round(v) < 0 ? 'num neg' : 'num';
+const esc = s => String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const scLower = k => Calc.SC_LABEL[k].toLowerCase();
+const aptTitle = ap => esc(ap.code) + ' · ' + esc(ap.name);
+
+/* ============================================================
+   Отрисовка
+   ============================================================ */
+function render() {
+  result = Calc.computeAll(state);
+  renderCards();
+  renderRecs();
+  renderTable();
+  renderMobile();
+  renderChart();
+  syncToggles();
+}
+
+function renderCards() {
+  const { apts, portfolioTot } = result;
+  let html = apts.map(a => {
+    const best = a.tot[a.best].y2027.net, second = a.tot[a.second].y2027.net;
+    return `<div class="card">
+      <div class="ttl">${esc(a.ap.code)}</div>
+      <div class="name">${esc(a.ap.name)}</div>
+      <span class="badge">★ ${Calc.SC_LABEL[a.best]}</span>
+      <div class="big ${cls(best)}">${money(best)}</div>
+      <div class="sub">чистый доход за 2027 год</div>
+      <div class="sub">на <span class="num">${money(best - second)}</span> больше, чем ${scLower(a.second)}</div>
+    </div>`;
+  }).join('');
+  html += `<div class="card portfolio">
+    <div class="ttl">Все квартиры</div>
+    <div class="name">Оптимальный портфель</div>
+    <span class="badge">${apts.map(a => esc(a.ap.code) + ' — ' + scLower(a.best)).join(', ')}</span>
+    <div class="big ${cls(portfolioTot.y2027.net)}">${money(portfolioTot.y2027.net)}</div>
+    <div class="sub">чистый доход за 2027 год</div>
+    <div class="rows">
+      <span class="muted">Окт–дек 2026</span><span class="${cls(portfolioTot.y2026.net)}">${money(portfolioTot.y2026.net)}</span>
+      <span class="muted">Всего за период</span><span class="${cls(portfolioTot.all.net)}"><b>${money(portfolioTot.all.net)}</b></span>
+    </div>
+  </div>`;
+  document.getElementById('cards').innerHTML = html;
+}
+
+function renderRecs() {
+  const { apts } = result;
+  const items = apts.map(a => {
+    const b = a.best, s = a.second;
+    const diff = a.tot[b].y2027.net - a.tot[s].y2027.net;
+    let txt = `<b>${aptTitle(a.ap)}:</b> выгоднее всего ${scLower(b)} — <span class="num">${money(a.tot[b].y2027.net)}</span> чистыми за 2027 год, это на <span class="num">${money(diff)}</span> больше, чем ${scLower(s)}.`;
+    if (b === 'daily') txt += ' Посуточная аренда требует постоянного участия собственника или управляющего (заселение, уборка, общение с гостями), а её доход сильно зависит от сезона.';
+    else if (b === 'long') txt += ' Долгосрочная аренда даёт стабильный доход почти без участия собственника: коммуналку платит арендатор, простоев нет.';
+    else txt += ' Учтите простои между договорами: каждый новый арендатор — это поиск и пустые дни.';
+    return `<li>${txt}</li>`;
+  });
+  if (!apts.some(a => a.best === 'short')) {
+    items.push('<li class="warn">Краткосрочная аренда в этой модели проигрывает остальным вариантам из-за простоев между договорами.</li>');
+  }
+  if (apts.some(a => a.best === 'daily')) {
+    items.push('<li class="warn">Если нанимать управляющую компанию для посуточной аренды (обычно 15–25% от дохода), её выгода заметно снизится. Проверьте это, увеличив комиссию в настройках.</li>');
+  }
+  document.getElementById('recs').innerHTML = items.join('');
+}
+
+// Столбцы таблицы: месяцы 2026, итог 2026, месяцы 2027, итог 2027, всего
+function columns() {
+  const cols = [];
+  result.MS.forEach(mo => {
+    if (mo.y === 2027 && mo.m === 0) cols.push({ t: 'y', k: 'y2026', label: 'ИТОГО 2026' });
+    cols.push({ t: 'm', i: mo.i, label: mo.label });
+  });
+  cols.push({ t: 'y', k: 'y2027', label: 'ИТОГО 2027' });
+  cols.push({ t: 'y', k: 'all', label: 'ВСЕГО' });
+  return cols;
+}
+function seriesCells(vals, cols) {
+  const sums = { y2026: 0, y2027: 0, all: 0 };
+  vals.forEach((v, i) => { sums[result.MS[i].y === 2026 ? 'y2026' : 'y2027'] += v; sums.all += v; });
+  return cols.map(c => {
+    const v = c.t === 'm' ? vals[c.i] : sums[c.k];
+    return `<td class="${cls(v)}${c.t === 'y' ? ' tot' : ''}">${fmt(v)}</td>`;
+  }).join('');
+}
+function detailRows(series) {
+  const keys = Object.keys(Calc.ITEM_LABEL).filter(k => series.some(r => (r.items[k] || 0) !== 0));
+  const rows = [['Валовый доход', series.map(r => r.gross), true]];
+  keys.forEach(k => rows.push([Calc.ITEM_LABEL[k], series.map(r => -(r.items[k] || 0)), false]));
+  rows.push(['Налог (ИПН)', series.map(r => -r.tax), false]);
+  rows.push(['Чистый доход', series.map(r => r.net), true]);
+  return rows;
+}
+
+function renderTable() {
+  const cols = columns(), mode = ui.mode;
+  let h = '<thead><tr><th scope="col">Объект и сценарий</th>' +
+    cols.map(c => `<th scope="col"${c.t === 'y' ? ' class="tot"' : ''}>${c.label}</th>`).join('') + '</tr></thead><tbody>';
+  result.apts.forEach(a => {
+    h += `<tr class="apt"><td colspan="${cols.length + 1}">${aptTitle(a.ap)} <span class="muted" style="font-weight:400">— ${esc(a.ap.note)}</span></td></tr>`;
+    Calc.SC.forEach(k => {
+      if (ui.filter === 'best' && k !== a.best) return;
+      const key = a.ap.id + ':' + k, open = ui.expanded.has(key), isBest = k === a.best;
+      h += `<tr class="sc${isBest ? ' best' : ''}"><td><button type="button" class="rowbtn" data-exp="${esc(key)}" aria-expanded="${open}">
+        <span class="chev" aria-hidden="true">${open ? '▼' : '▶'}</span>${Calc.SC_LABEL[k]}${isBest ? ' <span class="star" aria-label="лучший сценарий">★</span>' : ''}</button></td>` +
+        seriesCells(a.sc[k].map(r => r[mode]), cols) + '</tr>';
+      if (open) {
+        detailRows(a.sc[k]).forEach(([label, vals, strong]) => {
+          h += `<tr class="det${strong ? ' strong' : ''}"><td>${label}</td>` + seriesCells(vals, cols) + '</tr>';
+        });
+      }
+    });
+  });
+  h += `<tr class="portfolio"><td>ИТОГО по портфелю<br><span class="muted" style="font-weight:400;font-size:11.5px">оптимальный сценарий</span></td>` +
+    seriesCells(result.portfolio.map(r => r[mode]), cols) + '</tr></tbody>';
+  document.getElementById('tbl').innerHTML = h;
+}
+
+function renderMobile() {
+  const mode = ui.mode, yk = ui.year;
+  const inYear = mo => (yk === 'y2026' ? mo.y === 2026 : mo.y === 2027);
+  let h = '';
+  result.apts.forEach(a => {
+    h += `<div class="m-apt"><h3>${aptTitle(a.ap)}</h3>`;
+    Calc.SC.forEach(k => {
+      if (ui.filter === 'best' && k !== a.best) return;
+      const key = a.ap.id + ':' + k, open = ui.mExpanded.has(key), isBest = k === a.best;
+      const v = a.tot[k][yk][mode];
+      h += `<button type="button" class="m-row${isBest ? ' best' : ''}" data-mexp="${esc(key)}" aria-expanded="${open}">
+        <span class="l"><span class="chev" aria-hidden="true">${open ? '▼' : '▶'}</span>${Calc.SC_LABEL[k]}${isBest ? ' <span class="star">★</span>' : ''}</span>
+        <span class="v ${cls(v)}">${money(v)}</span></button>`;
+      h += `<div class="m-detail"${open ? '' : ' hidden'}>` +
+        result.MS.filter(inYear).map(mo => {
+          const val = a.sc[k][mo.i][mode];
+          return `<span>${Calc.MONTHS[mo.m]} ${mo.y}</span><span class="${cls(val)}">${money(val)}</span>`;
+        }).join('') + '</div>';
+    });
+    h += '</div>';
+  });
+  const pt = result.portfolioTot;
+  h += `<div class="m-apt portfolio"><h3>ИТОГО по портфелю (оптимальный)</h3><div class="m-port">
+    <span>${yk === 'y2026' ? 'Окт–дек 2026' : '2027 год'}</span><span class="${cls(pt[yk][mode])}"><b>${money(pt[yk][mode])}</b></span>
+    <span class="muted">Всего за период</span><span class="${cls(pt.all[mode])}">${money(pt.all[mode])}</span>
+  </div></div>`;
+  document.getElementById('mobile').innerHTML = h;
+}
+
+function renderChart() {
+  const sel = document.getElementById('chart-apt');
+  if (ui.chartApt >= result.apts.length) ui.chartApt = 0;
+  sel.innerHTML = result.apts.map((a, i) => `<option value="${i}"${i === ui.chartApt ? ' selected' : ''}>${aptTitle(a.ap)}</option>`).join('');
+  const a = result.apts[ui.chartApt], mode = ui.mode;
+  const W = 820, H = 280, pl = 70, pr = 14, pt = 14, pb = 34;
+  const all = [];
+  Calc.SC.forEach(k => a.sc[k].forEach(r => all.push(r[mode])));
+  let min = Math.min(0, ...all), max = Math.max(0, ...all);
+  if (max === min) max = min + 1;
+  const pad = (max - min) * 0.06; max += pad; if (min < 0) min -= pad;
+  const n = result.MS.length;
+  const x = i => pl + (W - pl - pr) * (i / (n - 1));
+  const y = v => pt + (H - pt - pb) * (1 - (v - min) / (max - min));
+  const step = niceStep((max - min) / 4);
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${mode === 'net' ? 'Чистый' : 'Валовый'} доход по месяцам">`;
+  for (let t = Math.ceil(min / step) * step; t <= max; t += step) {
+    s += `<line x1="${pl}" x2="${W - pr}" y1="${y(t)}" y2="${y(t)}" stroke="${Math.abs(t) < 1e-6 ? '#9aa5a0' : '#e2e7e4'}" stroke-width="1"/>`;
+    s += `<text x="${pl - 8}" y="${y(t) + 4}" text-anchor="end" font-size="11" fill="#5b6660">${fmtShort(t)}</text>`;
+  }
+  result.MS.forEach((mo, i) => {
+    s += `<text x="${x(i)}" y="${H - 12}" text-anchor="middle" font-size="11" fill="#5b6660">${Calc.MONTHS[mo.m]}</text>`;
+    if (mo.m === 0) s += `<line x1="${x(i) - (x(1) - x(0)) / 2}" x2="${x(i) - (x(1) - x(0)) / 2}" y1="${pt}" y2="${H - pb}" stroke="#c9d1cd" stroke-dasharray="3 3"/><text x="${x(i) - (x(1) - x(0)) / 2 + 4}" y="${pt + 10}" font-size="11" fill="#5b6660">2027</text>`;
+  });
+  const colors = { daily: 'var(--c-daily)', short: 'var(--c-short)', long: 'var(--c-long)' };
+  Calc.SC.forEach(k => {
+    const pts = a.sc[k].map((r, i) => `${x(i).toFixed(1)},${y(r[mode]).toFixed(1)}`).join(' ');
+    s += `<polyline points="${pts}" fill="none" stroke="${colors[k]}" stroke-width="2"/>`;
+    a.sc[k].forEach((r, i) => {
+      s += `<circle cx="${x(i)}" cy="${y(r[mode])}" r="3" fill="${colors[k]}"><title>${Calc.SC_LABEL[k]}, ${result.MS[i].label}: ${money(r[mode])}</title></circle>`;
+    });
+  });
+  s += '</svg>';
+  document.getElementById('chart').innerHTML = s;
+}
+function niceStep(raw) {
+  const p = Math.pow(10, Math.floor(Math.log10(raw || 1)));
+  const f = raw / p;
+  return (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * p;
+}
+function fmtShort(v) {
+  const a = Math.abs(v);
+  if (a >= 1e6) return (v / 1e6).toLocaleString('ru-RU', { maximumFractionDigits: 1 }) + ' млн';
+  if (a >= 1e3) return (v / 1e3).toLocaleString('ru-RU', { maximumFractionDigits: 0 }) + ' тыс';
+  return fmt(v);
+}
+
+function syncToggles() {
+  document.querySelectorAll('[data-mode]').forEach(b => b.setAttribute('aria-pressed', b.dataset.mode === ui.mode));
+  document.querySelectorAll('[data-filter]').forEach(b => b.setAttribute('aria-pressed', b.dataset.filter === ui.filter));
+  document.querySelectorAll('[data-year]').forEach(b => b.setAttribute('aria-selected', b.dataset.year === ui.year));
+}
+
+/* ---------- Настройки ---------- */
+function numInput(id, label, value, step, attrs) {
+  return `<div class="fld"><label for="${id}">${label}</label><input id="${id}" type="number" inputmode="decimal" step="${step}" value="${value}" ${attrs}></div>`;
+}
+function renderSettings() {
+  const g = state.general;
+  let h = '<div class="set-group"><h3>Общие параметры</h3><div class="grid-fields">' +
+    GENERAL_FIELDS.map(([k, label, step]) => numInput('g-' + k, label, g[k], step, `data-g="${k}"`)).join('') + '</div></div>';
+  h += '<div class="set-group"><h3>Загрузка посуточной аренды по месяцам, %</h3><div class="occ-grid">' +
+    g.occ.map((v, i) => numInput('occ-' + i, Calc.MONTHS[i], v, 5, `data-occ="${i}" min="0" max="100"`)).join('') + '</div></div>';
+  h += '<div class="set-group"><h3>Квартиры</h3>';
+  state.apts.forEach((ap, idx) => {
+    h += `<fieldset class="apt-set"><legend>${aptTitle(ap)}</legend><div class="grid-fields">` +
+      APT_TEXT_FIELDS.map(([f, label]) => `<div class="fld"><label for="a${idx}-${f}">${label}</label><input id="a${idx}-${f}" type="text" value="${esc(ap[f])}" data-apt="${idx}" data-f="${f}"></div>`).join('') +
+      APT_NUM_FIELDS.map(([f, label, step]) => numInput(`a${idx}-${f}`, label, ap[f], step, `data-apt="${idx}" data-f="${f}"`)).join('') +
+      `</div><div class="actions"><button type="button" class="btn danger" data-del="${idx}"${state.apts.length < 2 ? ' disabled' : ''}>Удалить квартиру</button></div></fieldset>`;
+  });
+  h += '</div>';
+  document.getElementById('settings-body').innerHTML = h;
+}
+const parseNum = s => { const v = parseFloat(String(s).replace(',', '.').replace(/\s/g, '')); return isFinite(v) ? v : 0; };
+
+/* ---------- События ---------- */
+document.addEventListener('click', e => {
+  const t = e.target.closest('button');
+  if (!t) return;
+  if (t.dataset.mode) { ui.mode = t.dataset.mode; render(); }
+  else if (t.dataset.filter) { ui.filter = t.dataset.filter; render(); }
+  else if (t.dataset.year) { ui.year = t.dataset.year; render(); }
+  else if (t.dataset.exp) { toggle(ui.expanded, t.dataset.exp); render(); focusAfter(`[data-exp="${t.dataset.exp}"]`); }
+  else if (t.dataset.mexp) { toggle(ui.mExpanded, t.dataset.mexp); render(); focusAfter(`[data-mexp="${t.dataset.mexp}"]`); }
+  else if (t.dataset.del !== undefined) {
+    const idx = +t.dataset.del, ap = state.apts[idx];
+    if (state.apts.length > 1 && confirm(`Удалить квартиру «${ap.code} · ${ap.name}»?`)) {
+      state.apts.splice(idx, 1); saveState(); renderSettings(); render();
+    }
+  }
+});
+function toggle(set, k) { set.has(k) ? set.delete(k) : set.add(k); }
+function focusAfter(sel) { const el = document.querySelector(sel); if (el && el.offsetParent) el.focus(); }
+
+document.getElementById('settings-body').addEventListener('input', e => {
+  const el = e.target;
+  if (el.dataset.g) state.general[el.dataset.g] = parseNum(el.value);
+  else if (el.dataset.occ) state.general.occ[+el.dataset.occ] = parseNum(el.value);
+  else if (el.dataset.apt) {
+    const ap = state.apts[+el.dataset.apt], f = el.dataset.f;
+    ap[f] = el.type === 'text' ? el.value : parseNum(el.value);
+    if (f === 'code' || f === 'name') el.closest('fieldset').querySelector('legend').innerHTML = aptTitle(ap);
+  } else return;
+  saveState(); render();
+});
+
+document.getElementById('chart-apt').addEventListener('change', e => { ui.chartApt = +e.target.value; renderChart(); });
+
+document.getElementById('btn-add').addEventListener('click', () => {
+  const n = state.apts.length + 1;
+  const ap = Object.assign(clone(DEFAULTS.apts[0]), { id: 'k' + Date.now().toString(36), code: 'К' + n, name: 'Новая квартира', note: 'Описание' });
+  state.apts.push(ap); saveState(); renderSettings(); render();
+});
+document.getElementById('btn-reset').addEventListener('click', () => {
+  if (!confirm('Сбросить все параметры к значениям по умолчанию?')) return;
+  state = clone(DEFAULTS);
+  try { localStorage.removeItem(STORE_KEY); } catch (e) {}
+  ui.expanded.clear(); ui.mExpanded.clear(); ui.chartApt = 0;
+  renderSettings(); render();
+});
+
+document.getElementById('btn-csv').addEventListener('click', () => {
+  const cols = columns();
+  const cell = v => String(Math.round(v));
+  const rowVals = vals => {
+    const sums = { y2026: 0, y2027: 0, all: 0 };
+    vals.forEach((v, i) => { sums[result.MS[i].y === 2026 ? 'y2026' : 'y2027'] += v; sums.all += v; });
+    return cols.map(c => cell(c.t === 'm' ? vals[c.i] : sums[c.k]));
+  };
+  const q = s => '"' + String(s).replace(/"/g, '""') + '"';
+  const lines = [['Объект', 'Сценарий', 'Показатель', ...cols.map(c => c.label)].map(q).join(';')];
+  result.apts.forEach(a => Calc.SC.forEach(k => {
+    const name = a.ap.code + ' · ' + a.ap.name, scn = Calc.SC_LABEL[k] + (k === a.best ? ' ★' : '');
+    lines.push([q(name), q(scn), q('Валовый'), ...rowVals(a.sc[k].map(r => r.gross))].join(';'));
+    lines.push([q(name), q(scn), q('Чистый'), ...rowVals(a.sc[k].map(r => r.net))].join(';'));
+  }));
+  lines.push([q('ИТОГО по портфелю'), q('Оптимальный'), q('Валовый'), ...rowVals(result.portfolio.map(r => r.gross))].join(';'));
+  lines.push([q('ИТОГО по портфелю'), q('Оптимальный'), q('Чистый'), ...rowVals(result.portfolio.map(r => r.net))].join(';'));
+  const blob = new Blob(['﻿' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement('a');
+  link.href = url; link.download = 'dohody-pavlodar.csv';
+  document.body.appendChild(link); link.click(); link.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+});
+
+/* ============================================================
+   Проверка по контрольному примеру PRD §9 (запуск: runSelfTest())
+   ============================================================ */
+function runSelfTest() {
+  const r = Calc.computeAll(clone(DEFAULTS));
+  const fails = [];
+  const chk = (name, got, exp) => { if (Math.abs(Math.round(got) - exp) > 1) fails.push(`${name}: ${Math.round(got)} ≠ ${exp}`); };
+  const exp = {
+    0: { daily: [709800, 352146, 3367224, 1775363], short: [450000, 293000, 1944000, 1298720], long: [300000, 222000, 1824000, 1563360] },
+    2: { daily: [591500, 208255, 2808000, 1130160], short: [400000, 204000, 1728000, 928640], long: [260000, 157400, 1580800, 1262912] }
+  };
+  for (const ai in exp) for (const k in exp[ai]) {
+    const t = r.apts[ai].tot[k], e = exp[ai][k];
+    chk(`К${+ai + 1} ${k} валовый 2026`, t.y2026.gross, e[0]); chk(`К${+ai + 1} ${k} чистый 2026`, t.y2026.net, e[1]);
+    chk(`К${+ai + 1} ${k} валовый 2027`, t.y2027.gross, e[2]); chk(`К${+ai + 1} ${k} чистый 2027`, t.y2027.net, e[3]);
+  }
+  chk('Портфель 2026', r.portfolioTot.y2026.net, 861692);
+  chk('Портфель 2027', r.portfolioTot.y2027.net, 4813638);
+  chk('Портфель всего', r.portfolioTot.all.net, 5675330);
+  [[0, 260400, 132308], [1, 210000, 100700], [2, 239400, 119138], [3, 211680, 103994], [9, 374976, 208131], [14, 258552, 133885]]
+    .forEach(([i, gr, nt]) => { chk(`К1 посуточно месяц ${i} валовый`, r.apts[0].sc.daily[i].gross, gr); chk(`К1 посуточно месяц ${i} чистый`, r.apts[0].sc.daily[i].net, nt); });
+  if (r.apts[0].best !== 'daily' || r.apts[2].best !== 'long') fails.push('Неверный лучший сценарий');
+  console[fails.length ? 'error' : 'info'](fails.length ? 'Контрольный пример: ошибки\n' + fails.join('\n') : 'Контрольный пример PRD §9: все проверки пройдены');
+  return fails;
+}
+window.runSelfTest = runSelfTest;
+
+if (window.matchMedia('(min-width: 768px)').matches) ui.year = 'y2027';
+renderSettings();
+render();
+runSelfTest();
+</script>
+</body>
+</html>
